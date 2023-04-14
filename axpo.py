@@ -1,8 +1,8 @@
 import pandas as pd
-from tower.tower import Tower
+from tower.tower import TowerExcel
 import json
 import os
-from addWires import addLines
+from utils.addWires import addLines
 
 SUPPORTED_FORMATS = ['.csv', '.xlsx']
 def main():
@@ -23,7 +23,7 @@ def main():
 
         for tID in TowerIDs:
             oneTowerData = data[data["technplatz"] == tID]
-            tower = Tower(data=oneTowerData)
+            tower = TowerExcel(data=oneTowerData)
             towers.append(tower)
 
             json_data = tower.generate_json_file()

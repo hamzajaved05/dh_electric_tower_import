@@ -4,7 +4,7 @@ from tower.pointofinterest import POI
 from tower.basetower import BaseTower
 
 
-class Tower(BaseTower):
+class TowerExcel(BaseTower):
     def __init__(self, axpo=True, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
 
@@ -119,5 +119,5 @@ if __name__ == "__main__":
     for tID in TowerIDs:
 
         oneTowerData = data[data["technplatz"] == tID]
-        tower = Tower(data=oneTowerData)
+        tower = TowerExcel(data=oneTowerData)
         towers.append(tower)
