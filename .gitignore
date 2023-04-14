@@ -1,0 +1,101 @@
+Data/*
+Data/AxpoAathalData.dxf
+Data/Sample (copy).xlsx
+Data/WestNetzElectricData.zip
+Data/.vscode/settings.json
+Data/AXPO/.~lock.ergebnis_TR0111_2023-01-27.xlsx#
+Data/AXPO/.~lock.ergebnis_TR0229_2023-01-27.xlsx#
+Data/AXPO/.~lock.masteditorexport__TR0112_2023-01-18.xlsx#
+Data/AXPO/ergebnis_TR0111_2023-01-27_n.json
+Data/AXPO/ergebnis_TR0111_2023-01-27.xlsx
+Data/AXPO/ergebnis_TR0229_2023-01-27_n.json
+Data/AXPO/ergebnis_TR0229_2023-01-27.xlsx
+Data/AXPO/masteditorexport__TR0112_2023-01-18_n.json
+Data/AXPO/masteditorexport__TR0112_2023-01-18.xlsx
+Data/AXPO/masteditorexport__TR0130_2023-01-18_n.json
+Data/AXPO/masteditorexport__TR0130_2023-01-18.xlsx
+Data/AXPO/TR0111.dhm
+Data/AXPO/TR0112.dhm
+Data/AXPO/TR0130.dhm
+Data/AXPO/TR0229.dhm
+Data/AXPO/TR1230_Y_Fehraltorf-Aathal_1230x014-1230x024_LV95.dxf
+Data/AXPO/sites/ergebnis_TR0111_2023-01-27_n.json
+Data/AXPO/sites/ergebnis_TR0111_2023-01-27.xlsx
+Data/AXPO/sites/ergebnis_TR0229_2023-01-27_n.json
+Data/AXPO/sites/ergebnis_TR0229_2023-01-27.xlsx
+Data/AXPO/sites/masteditorexport__TR0112_2023-01-18_n.json
+Data/AXPO/sites/masteditorexport__TR0112_2023-01-18.xlsx
+Data/AXPO/sites/masteditorexport__TR0130_2023-01-18_n.json
+Data/AXPO/sites/masteditorexport__TR0130_2023-01-18.xlsx
+Data/AXPO/sites/TR0111.dhm
+Data/AXPO/sites/TR0112.dhm
+Data/AXPO/sites/TR0130.dhm
+Data/AXPO/sites/TR0229.dhm
+Data/CSV/2022-12-05_Mastliste_Thale.xlsx
+Data/CSV/Maste.xlsx
+Data/David_at_archventure/HeimiswillTestmasten.xlsx
+Data/David_at_archventure/HeimiswillTestmasten.xlsx.json
+Data/David_at_archventure/Sample.xlsx
+Data/Tennet_Lammert/74102115-035-021 - W2H350_Rev.F.pdf
+Data/Tennet_Lammert/74102115-035-023 - W2H400_Rev.D.pdf
+Data/Tennet_Lammert/blad4 rev60 (184-173).pdf
+Data/Tennet_Lammert/Tennet_15Masten_Beverwijk_n.json
+Data/Tennet_Lammert/Tennet_15Masten_Beverwijk_V2_n.json
+Data/Tennet_Lammert/Tennet_15Masten_Beverwijk_V2.xlsx
+Data/Tennet_Lammert/Tennet_15Masten_Beverwijk.xlsx
+Data/Tennet_Lammert/Tennet_15Masten_Beverwijk2_n.json
+Data/Tennet_Lammert/Tennet_15Masten_Beverwijk2.xlsx
+Data/Tennet_Lammert/Test_mast_tennet_n.json
+Data/Tennet_Lammert/Test_mast_tennet.xlsx
+Data/Westnetz/.~lock.Maste Westnetz.xlsx#
+Data/Westnetz/.~lock.MasteWestnetz.xlsx#
+Data/Westnetz/MasteWestnetz.xlsx
+Data/Westnetz/Mast Sketches/Mastskizze FMPROFIL- 0151_5 - 0151_5-0151_11.TIF
+Data/Westnetz/Mast Sketches/Mastskizze FMPROFIL- 0151_6 - 0151_5-0151_11.TIF
+Data/Westnetz/Mast Sketches/Mastskizze FMPROFIL- 0151_7 - 0151_5-0151_11.TIF
+Data/Westnetz/Mast Sketches/Mastskizze FMPROFIL- 0151_8 - 0151_5-0151_11.TIF
+Data/Westnetz/Sample Pictures Pole/Bl0151_M0005_A1-L_.1_FL.jpg
+Data/Westnetz/Sample Pictures Pole/Bl0151_M0005_A1-L_.2_BL.jpg
+Data/Westnetz/Sample Pictures Pole/Bl0151_M0005_A1-L_.2_FL.jpg
+Data/Westnetz/Sample Pictures Pole/Bl0151_M0005_A1-R_BR.jpg
+Data/Westnetz/Sample Pictures Pole/Bl0151_M0005_A1-R_FR.jpg
+Data/Westnetz/Sample Pictures Pole/Bl0151_M0005_A2-L_.1_FL.jpg
+Data/Westnetz/Sample Pictures Pole/Bl0151_M0005_A2-L_.2_BL.jpg
+Data/Westnetz/Sample Pictures Pole/Bl0151_M0005_A2-L_.2_FL.jpg
+Data/Westnetz/Sample Pictures Pole/Bl0151_M0005_A2-R_BR.jpg
+Data/Westnetz/Sample Pictures Pole/Bl0151_M0005_A2-R_FR.jpg
+Data/Westnetz/Sample Pictures Pole/Bl0151_M0005_A3-L_.1_FL.jpg
+Data/Westnetz/Sample Pictures Pole/Bl0151_M0005_A3-L_.2_BL.jpg
+Data/Westnetz/Sample Pictures Pole/Bl0151_M0005_A3-L_.2_FL.jpg
+Data/Westnetz/Sample Pictures Pole/Bl0151_M0005_A3-R_BR.jpg
+Data/Westnetz/Sample Pictures Pole/Bl0151_M0005_A3-R_FR.jpg
+Data/Westnetz/Sample Pictures Pole/Bl0151_M0005_BL_45.jpg
+Data/Westnetz/Sample Pictures Pole/Bl0151_M0005_BR_45.jpg
+Data/Westnetz/Sample Pictures Pole/Bl0151_M0005_FL_45.jpg
+Data/Westnetz/Sample Pictures Pole/Bl0151_M0005_FR_45.jpg
+Data/Westnetz/Sample Pictures Pole/Bl0151_M0005_G1-1.1_BR.jpg
+Data/Westnetz/Sample Pictures Pole/Bl0151_M0005_G1-1.1_FL.jpg
+Data/Westnetz/Site Overview Plans/LP-01510001.PDF
+Data/Westnetz/Site Overview Plans/LP-01510002.PDF
+Data/Westnetz/Site Overview Plans/TT-01510001.PDF
+Data/flynex8March/Christian8March.json
+Data/flynex8March/final.xlsx
+Data/json/EONDemo.json
+Data/json/EONDemoChhristianLinesNew.json
+Data/json/EONDemoChhristianNew.json
+Data/json/EONDemoLines.json
+Data/json/ergebnis_TR0111_2023-01-27.xlsx.json
+Data/json/ergebnis_TR0229_2023-01-27.xlsx.json
+Data/json/fugro.json
+Data/json/masteditorexport__TR0112_2023-01-18.xlsx.json
+Data/json/masteditorexport__TR0130_2023-01-18.xlsx.json
+Data/json/Sample.xlsx.json
+Data/json/Westnetz.json
+Data/json/WestnetzLines.json
+Data/json/50hrz/50hrz.json
+Data/kmls/132kV_Axpo_SBB_Leitungen_Aarau_Rupperswil_IST_Zustand_ohne_SBB_UL.kml
+Data/kmls/2022-04-19_TR0041_0042_DRAFT_ENTWURF.kml
+Data/kmls/2022-04-19_TR0041_0042_DRAFT_ENTWURF.kmz
+Data/kmls/Testmasten_Bickigen-TR1520_Bickigen.kmz
+Data/kmls/Testmasten_Bickigen-TR1520_Bickigen.kmz.kml
+Data/tem.csv
