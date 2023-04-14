@@ -7,9 +7,9 @@ class Line(object):
     def jsonify(self):
         return self.line
 
-    def getHash(points):
+    def get_hash(self):
         hash = 0
-        for p in points:
+        for p in self.line:
             for c in p:
                 hash += 32 * c
         return hash

@@ -1,3 +1,5 @@
+__pycache__/*
+*/__pycache__/*
 Data/*
 Data/AxpoAathalData.dxf
 Data/Sample (copy).xlsx
@@ -99,3 +101,5 @@ Data/kmls/2022-04-19_TR0041_0042_DRAFT_ENTWURF.kmz
 Data/kmls/Testmasten_Bickigen-TR1520_Bickigen.kmz
 Data/kmls/Testmasten_Bickigen-TR1520_Bickigen.kmz.kml
 Data/tem.csv
+__pycache__/addWires.cpython-38.pyc
+__pycache__/addWires.cpython-38.pyc

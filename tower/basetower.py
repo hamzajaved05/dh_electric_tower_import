@@ -4,7 +4,7 @@ from tower.pointofinterest import POI
 from tower.line import Line
 
 
-class Tower:
+class BaseTower(object):
     def __init__(self, *args, **kwargs):
         self.name = None
         self.unique_identifier = None
@@ -17,15 +17,16 @@ class Tower:
         self.tower_material = None
         self.json_data = {}
         self.pois = {}
+        self.lines = {}
         self.highest_point = None
         self.data = None
 
     def generate_json_file(self):
-        if len(self.poi) == 0:
+        if len(self.pois) == 0:
             self.calculate_pois()
         if len(self.lines) == 0:
             self.calculate_lines()
-        if (len(self.poi) > 1 and len(self.lines) > 0 and not self.highest_point is None):
+        if (len(self.pois) > 1 and not self.highest_point is None):
             self.generate_json()
             return self.json_data
 
@@ -64,17 +65,20 @@ class Tower:
     
     def add_line(self, p1, p2):
         line = Line(p1, p2)
-        hash = line.getHash()
+        hash = line.get_hash()
         if not hash in self.lines.keys():
             self.lines[hash] = line
 
 
-    def get_value(data):
+    def get_value(self, data):
         if isinstance(data, pd.Series) or isinstance(data, pd.DataFrame):
             return data.iloc[0]
         else:
             return data
         
     
-    def calculate_pois():
-        raise NotImplemented
+    def calculate_pois(self,):
+        raise NotImplementedError
+    
+    def calculate_lines(self,):
+        raise NotImplementedError

@@ -1,28 +1,25 @@
 import numpy as np
 import pandas as pd
 from tower.pointofinterest import POI
+from tower.basetower import BaseTower
 
 
-class Tower(object):
+class Tower(BaseTower):
     def __init__(self, axpo=True, *args, **kwargs):
+        super().__init__(self, *args, **kwargs)
+
         self.axpo = axpo
-        data = kwargs["data"]
-        self.name = str(data["mastoid"].iloc[0])
-        self.uniqueIdentifier = data["technplatz"].iloc[0]
-        self.longitude = data["longitudewgs84"].iloc[0]
-        self.latitude = data["latitudewgs84"].iloc[0]
-        self.baseHeight = data["hoehe"].iloc[0]
-        self.yawAngle = data["orientation_angle"].iloc[0]
-        self.angleOffset = data["orient_angle_offset"].iloc[0]
-        self.towerType = data["masttyp"].iloc[0]
-        self.towerMaterial = data["mastmaterial"].iloc[0]
+        self.data = kwargs["data"]
+        self.name = str(self.data["mastoid"].iloc[0])
+        self.uniqueIdentifier = self.data["technplatz"].iloc[0]
+        self.longitude = self.data["longitudewgs84"].iloc[0]
+        self.latitude = self.data["latitudewgs84"].iloc[0]
+        self.baseHeight = self.data["hoehe"].iloc[0]
+        self.yawAngle = self.data["orientation_angle"].iloc[0]
+        self.angleOffset = self.data["orient_angle_offset"].iloc[0]
+        self.towerType = self.data["masttyp"].iloc[0]
+        self.towerMaterial = self.data["mastmaterial"].iloc[0]
         self.JSON = {}
-        self.data = None
-        poisExist = self.obtainPOIData(data)
-        if poisExist:
-            linesExist = self.obtainLineData(data)
-            if linesExist:
-                self.generateJSON()
 
     def filterDataBasedonWireDirection(self, data):
         directions = pd.unique(data["seil_richtung"])
@@ -31,15 +28,15 @@ class Tower(object):
 
         return data[data["seil_richtung"] == directions[0]]
 
-    def obtainPOIData(self, data):
-        self.highestPoint = getValue(
-            self.getHighestPoint(data))
+    def calculate_pois(self):
+        self.highestPoint = self.get_value(
+            self.getHighestPoint(self.data))
         self.pois = {}
 
         uniqueYaws = set()
 
 
-        for index, row in data.iterrows():
+        for index, row in self.data.iterrows():
             angle = self.yawAngle + 90
             distance = row["seil_realposx"]
             height = row["seil_realposy"] 
@@ -55,25 +52,25 @@ class Tower(object):
             if height > self.highestPoint:
                 self.highestPoint = height
 
-            self.addPOI(height=height, distance=distance, angle=angle, calibration=False)
+            self.add_poi(height=height, distance=distance, angle=angle, calibration=False)
 
         # Add the highest point as calibration point
-        self.addPOI(self.highestPoint, 0, 0, calibration = True)
+        self.add_poi(self.highestPoint, 0, 0, calibration = True)
 
         uniqueYaws = list(uniqueYaws)
         if len(uniqueYaws) == 1:
             for each in self.pois:
-                self.pois[each].setAzimuth(uniqueYaws[0])
+                self.pois[each].set_azimuth(uniqueYaws[0])
+
         return True
 
-
-    def obtainLineData(self, data):
+    def calculate_lines(self):
         if len(self.pois) == 0:
             print("No POIs found")
             return False
         
         self.lines = {}
-        for index, row in data.iterrows():
+        for index, row in self.data.iterrows():
             leftangle = self.yawAngle - 90.0
             rightangle = self.yawAngle + 90.0
             distanceleft = row["ausleger_breite_links"]
@@ -84,9 +81,7 @@ class Tower(object):
             else:
                 line = getLine(distanceleft, leftangle, height, distanceright, rightangle, height)
         
-            hashLine = getHash(line)
-            if not hashLine in self.lines.keys():
-                self.lines[hashLine] = line
+            self.add_line(line[0], line[1])
         
         return True
 
@@ -94,54 +89,9 @@ class Tower(object):
     def getHighestPoint(self, data):
         return np.max(data[["elevation_ausl_hoeheabboden", "seil_realposy"]])
 
-    def generateJSON(self):
-        self.JSON = {"type": "Feature"}
-        self.JSON["geometry"] = {
-            "type": "Point",
-            "coordinates": [self.longitude, self.latitude]
-        }
-
-        pois = [
-                self.poiJSON(poi) for poi in self.pois.values()
-            ]
-        pois = sorted(pois, key = lambda f: f["height"] * 100 + f["distance"] * 10 + f["azimuth"] / 180, reverse = True)
-        
-
-        self.JSON["properties"] = {
-            "type": "electric_pole",
-            "name": str(self.name),
-            "poleBaseASLMeters": self.baseHeight,
-            "pois": pois,
-            "structure": {
-                "lines3d":[line for line in self.lines.values()]}}
-
-    def addPOI(self, height, distance, angle, calibration):
-
-        if pd.isnull(height) or pd.isnull(distance) or pd.isnull(angle):
-            return False
-        p = POI(height, distance, angle, calibration=calibration)
-        hash = p.getHash()
-        if not hash in self.pois.keys():
-            self.pois[hash] = p
-
-    def poiJSON(self, poi: POI):
-        return poi.jsonify()
-    
-    def lineJSON(self, line: np.ndarray):
-        return line
-
-    def towerlineJSON(self):
-        return None
-
     def __repr__(self) -> str:
         return f"Tower {self.name}  '{self.uniqueIdentifier}' at {self.longitude}, {self.latitude} with POI count = {len(self.pois)}"
 
-
-def getValue(data):
-    if isinstance(data, pd.Series) or isinstance(data, pd.DataFrame):
-        return data.iloc[0]
-    else:
-        return data
 
 def getVerticalLine(heightStart, heightEnd):
     points = [[0, 0, heightStart], [0, 0, heightEnd]]
@@ -158,13 +108,6 @@ def getLine(distance1, angle1, height1, distance2, angle2, height2):
     y2 = distance2 * np.sin(np.deg2rad(angle2))
     z2 = height2
     return [[x1, y1, z1], [x2, y2, z2]]
-
-def getHash(points):
-    hash = 0
-    for p in points:
-        for c in p:
-            hash += 32 * c
-    return hash
 
 if __name__ == "__main__":
     file = "Data/AXPO/masteditorexport__TR0112_2023-01-18.xlsx"

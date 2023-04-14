@@ -26,10 +26,12 @@ def main():
             tower = Tower(data=oneTowerData)
             towers.append(tower)
 
+            json_data = tower.generate_json_file()
+
             if len(tower.JSON) == 0:
                 continue
             else:
-                json_object["features"].append(tower.JSON)
+                json_object["features"].append(json_data)
 
         outfile = os.path.join(outdir, basename+"_n.json")
 
