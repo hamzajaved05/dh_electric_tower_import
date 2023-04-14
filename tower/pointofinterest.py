@@ -19,7 +19,7 @@ class POI(object):
                     "azimuth": float(self.azimuth)}  
                 
         else:
-            return {"height": float(self.hseight),
+            return {"height": float(self.height),
                     "distance": float(self.distance),
                     "azimuth": float(self.azimuth),
                     "wireAzimuth1": float(-self.azimuth),
@@ -31,5 +31,5 @@ class POI(object):
     def __repr__(self) -> str:
         return f"{'Calibration ' if self.calibration else ''}POI at distance {self.distance} with height {self.height} and angle {self.azimuth}"
     
-    def set_azimuth(self, azimuth) -> Nones:
+    def set_azimuth(self, azimuth) -> None:
         self.azimuth = azimuth
