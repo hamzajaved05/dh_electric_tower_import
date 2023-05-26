@@ -63,7 +63,7 @@ def addLinebetweenTowers(data, t1ID, t2ID, wireID):
     pFirst = getPOILatLongHeight(data, t1ID, wireID)
     pts.append(pFirst)
     pLast = getPOILatLongHeight(data, t2ID, wireID)
-    count = 50
+    count = 10
 
     xInterpolated, yInterpolated = np.linspace(pFirst[0], pLast[0], count), np.linspace(pFirst[1], pLast[1], count)
     h = pLast[2] - pFirst[2]

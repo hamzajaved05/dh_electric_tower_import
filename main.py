@@ -6,21 +6,22 @@ import os
 from utils.addWires import addLines
 from typing import List
 import geojson
+from nmk.helper import checkmkdir
 
 
 SUPPORTED_FORMATS_CSV = ['.csv', '.xlsx']
 SUPPORTED_FORMATS_JSON = ['.geojson']
 
 def main():
-    dir: str = "Data/50Hz_json"
-    outdir: str = dir
+    dir: str = "/mnt/00A03D3C0BCCF8D8/Data/PowerLinesData/20230526ChristianTestLine"
+    outdir: str = os.path.join(dir, "output")
+    checkmkdir(outdir)
     files: List[str]  = [file for file in os.listdir(dir)]
+    json_object = {
+    "type": "FeatureCollection",
+    "features": []
+    } 
     for file in files:
-        json_object = {
-            "type": "FeatureCollection",
-            "features": []
-            }
-        
         if os.path.splitext(file)[1] in SUPPORTED_FORMATS_CSV:
             basename = os.path.splitext(os.path.basename(file))[0]
             file = os.path.join(dir, file)
@@ -36,7 +37,7 @@ def main():
 
                 json_data = tower.generate_json_file()
 
-                if len(tower.JSON) == 0:
+                if len(json_data) == 0:
                     continue
                 else:
                     json_object["features"].append(json_data)
@@ -48,19 +49,16 @@ def main():
                 json_object_load = geojson.load(f)
             tower = TowerGeoJSON(json_object_load)
             json_data = tower.generate_json_file()
-            json_object["features"].append(json_data)
-
-            
+            json_object["features"].append(json_data)            
         
         else: 
             continue
             
-        outfile = os.path.join(outdir, basename+"_n.json")
+    outfile = os.path.join(outdir, basename+"_n.json")
+    json_object = addLines(json_object)
 
-        json_object = addLines(json_object)
-    
-        with open(outfile, "w") as f:
-            json.dump(json_object, f, indent = 4)
+    with open(outfile, "w") as f:
+        json.dump(json_object, f, indent = 4)
 
             
 

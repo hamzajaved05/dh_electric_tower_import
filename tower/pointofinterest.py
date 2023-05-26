@@ -1,5 +1,7 @@
 import os
 from typing import Dict
+import numpy as np
+from nmk.GeoUtils import CartesianMetersToGeo
 
 class POI(object):
     def __init__(self, height: float, distance: float = 0, azimuth: float = 0, calibration: bool = False):
@@ -33,3 +35,13 @@ class POI(object):
     
     def set_azimuth(self, azimuth) -> None:
         self.azimuth = azimuth
+
+    def get_lat_lon(self, towerBase, asl):
+        height = self.height + asl
+        distance = self.distance
+        azimuth = self.azimuth
+        aziCCW = (90 - azimuth) % 360
+        x = distance * np.cos(np.deg2rad(aziCCW))
+        y = distance * np.sin(np.deg2rad(aziCCW))
+        out = CartesianMetersToGeo(towerBase, [x, y, height])
+        return [out[0], out[1], out[2]]

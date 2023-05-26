@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from tower.pointofinterest import POI
 from tower.line import Line
+from typing import Mapping
 
 
 class BaseTower(object):
@@ -16,8 +17,8 @@ class BaseTower(object):
         self.tower_type = None
         self.tower_material = None
         self.json_data = {}
-        self.pois = {}
-        self.lines = {}
+        self.pois: Mapping[str, Line] = {}
+        self.lines: Mapping[str, Line] = {}
         self.highest_point = None
         self.data = None
 
@@ -64,6 +65,9 @@ class BaseTower(object):
         return f"Tower {self.name}  '{self.unique_identifier}' at {self.longitude}, {self.latitude} with POI count = {len(self.pois)}"
     
     def add_line(self, p1, p2):
+        
+
+
         line = Line(p1, p2)
         hash = line.get_hash()
         if not hash in self.lines.keys():

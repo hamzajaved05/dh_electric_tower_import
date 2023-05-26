@@ -14,7 +14,7 @@ class TowerExcel(BaseTower):
         self.uniqueIdentifier = self.data["technplatz"].iloc[0]
         self.longitude = self.data["longitudewgs84"].iloc[0]
         self.latitude = self.data["latitudewgs84"].iloc[0]
-        self.baseHeight = self.data["hoehe"].iloc[0]
+        self.base_height = self.data["hoehe"].iloc[0]
         self.yawAngle = self.data["orientation_angle"].iloc[0]
         self.angleOffset = self.data["orient_angle_offset"].iloc[0]
         self.towerType = self.data["masttyp"].iloc[0]
@@ -29,7 +29,7 @@ class TowerExcel(BaseTower):
         return data[data["seil_richtung"] == directions[0]]
 
     def calculate_pois(self):
-        self.highestPoint = self.get_value(
+        self.highest_point = self.get_value(
             self.getHighestPoint(self.data))
         self.pois = {}
 
@@ -49,13 +49,13 @@ class TowerExcel(BaseTower):
             if abs(distance) > 0.1:
                 uniqueYaws.add(angle if distance > 0 else angle + 180)
             
-            if height > self.highestPoint:
-                self.highestPoint = height
+            if height > self.highest_point:
+                self.highest_point = height
 
             self.add_poi(height=height, distance=distance, angle=angle, calibration=False)
 
         # Add the highest point as calibration point
-        self.add_poi(self.highestPoint, 0, 0, calibration = True)
+        self.add_poi(self.highest_point, 0, 0, calibration = True)
 
         uniqueYaws = list(uniqueYaws)
         if len(uniqueYaws) == 1:
@@ -77,7 +77,7 @@ class TowerExcel(BaseTower):
             distanceright = row["ausleger_breite_rechts"] 
             height = row["elevation_ausl_hoeheabboden"]
             if pd.isnull(distanceleft) and pd.isnull(distanceright):
-                line = getVerticalLine(0.0, self.highestPoint)
+                line = getVerticalLine(0.0, self.highest_point)
             else:
                 line = getLine(distanceleft, leftangle, height, distanceright, rightangle, height)
         
