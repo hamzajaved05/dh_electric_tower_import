@@ -150,7 +150,7 @@ def add_names(json_dict: dict, xml_dict: dict) -> dict:
                 #         raise Exception("POI already used")
                 #     used.add(min_index_poi)
                 #     feature["properties"]["pois"][i]["name"] = xml_dict[xml_names[min_index]]["name"][min_index_poi]
-
+                #
                 # remove tower from xml_coordinates
                 xml_coordinates = np.delete(xml_coordinates, min_index, 0)
                 xml_names.pop(min_index)
