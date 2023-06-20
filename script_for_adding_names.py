@@ -173,4 +173,3 @@ if __name__ == "__main__":
     write_geojson(
         '/mnt/00A03D3C0BCCF8D8/Data/PowerLinesData/20230508SwissGrid/testLine/TR1670_Riddes-Avise_Valpeline_IT/TR1670_Riddes-Avise_Valpeline_IT_processed.json',
         json_dict2)
-    # print(json_dict)
