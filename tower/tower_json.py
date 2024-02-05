@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from tower.pointofinterest import POI
 from tower.basetower import BaseTower
-from nmk.GeoUtils import GeoToCartesianMeters
+from namak.GeoUtils import GeoToCartesianMeters
 
 
 class TowerGeoJSON(BaseTower):
@@ -42,7 +42,7 @@ class TowerGeoJSON(BaseTower):
 
         return True
 
-    def filterDataBasedonWireDirection(self, data):
+    def filter_data_based_on_wire_direction(self, data):
         directions = pd.unique(data["seil_richtung"])
         if len(directions) == 0:
             raise Exception("There is no valid incomming outgoing directions")
@@ -75,10 +75,10 @@ class TowerGeoJSON(BaseTower):
         for feature in self.data["features"][2:]:
             if feature['geometry']['type'] == 'LineString':
                 points = feature['geometry']['coordinates']
-                self.add_line(self.getXYlocation(points[0]), self.getXYlocation(points[1]))
+                self.add_line(self.get_xy_location(points[0]), self.get_xy_location(points[1]))
         return True
 
-    def getHighestPoint(self, data):
+    def get_highest_point(self, data):
         return np.max(data[["elevation_ausl_hoeheabboden", "seil_realposy"]])
 
     def get_poi_from_3d_point(self, point):
@@ -90,7 +90,7 @@ class TowerGeoJSON(BaseTower):
 
         return True
 
-    def getXYlocation(self, point):
+    def get_xy_location(self, point):
         cartesian_point = GeoToCartesianMeters([self.latitude, self.longitude], point[:2][::-1])
         return [*cartesian_point, point[2] - self.base_height]
 

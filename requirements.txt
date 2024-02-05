@@ -1,0 +1,7 @@
+geojson
+pandas
+Namak @ git+https://github.com/hamzajaved05/Utilities
+pyproj
+numpy
+Namak
+scipy

@@ -6,9 +6,9 @@ import os
 from utils.addWires import addLines
 from typing import List
 import geojson
-from nmk.helper import checkmkdir
+from namak.helper import checkmkdir
 
-from nmk.drone import DroneDirection
+from namak.drone import DroneDirection
 
 
 SUPPORTED_FORMATS_CSV = ['.csv', '.xlsx']

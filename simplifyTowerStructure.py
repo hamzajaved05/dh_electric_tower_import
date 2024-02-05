@@ -1,6 +1,6 @@
 import os
 from nmk.helper import jsonload, jsondump
-from tower.tower_excel import getLine
+from tower.tower_excel import get_line
 from utils.addWires import addLines
 import sys
 
@@ -11,10 +11,10 @@ def simplifyTowerstruct(data):
         lines = []
         for singlePoi in poi_data:
             if singlePoi["type"] == "CALIBRATION":
-                lines.append(getLine(0, 0, 0, singlePoi["distance"], singlePoi["azimuth"], singlePoi["height"]))
+                lines.append(get_line(0, 0, 0, singlePoi["distance"], singlePoi["azimuth"], singlePoi["height"]))
             else:
-                lines.append(getLine(0, 0, singlePoi["height"], singlePoi["distance"], singlePoi["azimuth"],
-                                     singlePoi["height"]))
+                lines.append(get_line(0, 0, singlePoi["height"], singlePoi["distance"], singlePoi["azimuth"],
+                                      singlePoi["height"]))
         return lines
 
     for feat in data["features"]:

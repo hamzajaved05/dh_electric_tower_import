@@ -1,51 +1,58 @@
 import pandas as pd
 import numpy as np
-from nmk.GeoUtils import CartesianMetersToGeo, GeoToCartesianMeters
+from namak.GeoUtils import CartesianMetersToGeo, GeoToCartesianMeters
 from collections import deque
+
 
 # AZIMUTH = 93.6
 
-def addPOI(obj, height, distance, azimuth, Calib = False):
+def add_poi(obj, height, distance, azimuth, Calib=False):
     if Calib:
         poi = {"type": "CALIBRATION",
-            "height": height,
-            "distance": distance,
-            "azimuth": azimuth}
+               "height": height,
+               "distance": distance,
+               "azimuth": azimuth}
     else:
         poi = {"height": height,
-            "distance": distance,
-            "azimuth": azimuth,
-            "wireAzimuth1": -azimuth,
-            "wireAzimuth2": azimuth}
+               "distance": distance,
+               "azimuth": azimuth,
+               "wireAzimuth1": -azimuth,
+               "wireAzimuth2": azimuth}
 
     obj["properties"]["pois"].append(poi)
     return True
 
-def checkMatchingPOI(data, towers):
+
+def check_matching_poi(data, towers):
     ret = True
     POIsTower = []
     for id in towers:
-        POIsTower.append(getNumberofPoisFromTower(data, id))
+        POIsTower.append(get_numberof_pois_from_tower(data, id))
     return POIsTower
 
-def getNumberofPoisFromTower(data, tower):
+
+def get_numberof_pois_from_tower(data, tower):
     return len(data["features"][tower]["properties"]["pois"])
 
-def getPOIfromIDs(data, towerID, poiID):
-    return getTowerfromID(data, towerID)["properties"]["pois"][poiID]
 
-def getTowerfromID(data, towerID):
+def get_poi_from_ids(data, towerID, poiID):
+    return get_tower_from_id(data, towerID)["properties"]["pois"][poiID]
+
+
+def get_tower_from_id(data, towerID):
     return data["features"][towerID]
+
 
 def getNamefromID(data, towerID):
     return data["features"][towerID]["properties"]["name"]
 
-def getPOILatLongHeight(data, towerId, poiId):
-    Tower = getTowerfromID(data, towerId)
+
+def get_poi_lat_long_height(data, towerId, poiId):
+    Tower = get_tower_from_id(data, towerId)
     TowerBase = Tower["geometry"]["coordinates"]
     ASL = Tower["properties"]["poleBaseASLMeters"]
 
-    poi = getPOIfromIDs(data, towerId, poiId)
+    poi = get_poi_from_ids(data, towerId, poiId)
     height = poi["height"] + ASL
     distance = poi["distance"]
     azimuth = poi["azimuth"]
@@ -55,20 +62,22 @@ def getPOILatLongHeight(data, towerId, poiId):
     out = CartesianMetersToGeo(TowerBase[::-1], [x, y, height])
     return [out[1], out[0], height]
 
-def parabolicFunc(x, a, verticalOffset):
-    return x**2 / (4 * a) + verticalOffset
 
-def addLinebetweenTowers(data, t1ID, t2ID, wireID1, wireID2):
+def parabolic_func(x, a, verticalOffset):
+    return x ** 2 / (4 * a) + verticalOffset
+
+
+def add_linebetween_towers(data, t1ID, t2ID, wireID1, wireID2):
     pts = []
-    pFirst = getPOILatLongHeight(data, t1ID, wireID1)
+    pFirst = get_poi_lat_long_height(data, t1ID, wireID1)
     pts.append(pFirst)
-    pLast = getPOILatLongHeight(data, t2ID, wireID2)
+    pLast = get_poi_lat_long_height(data, t2ID, wireID2)
     count = 10
 
     xInterpolated, yInterpolated = np.linspace(pFirst[0], pLast[0], count), np.linspace(pFirst[1], pLast[1], count)
     h = pLast[2] - pFirst[2]
     w_T = 5e-4
-    L = GeoToCartesianMeters(pFirst[:2][::-1], pLast[:2][::-1]) 
+    L = GeoToCartesianMeters(pFirst[:2][::-1], pLast[:2][::-1])
     L_ = np.linalg.norm(L)
 
     # h can be negative and hence the x1 and x2 can flip | It is needed
@@ -76,12 +85,12 @@ def addLinebetweenTowers(data, t1ID, t2ID, wireID1, wireID2):
     x2 = L_ / 2 + (h / L_) / w_T
 
     # S1 is sag from the closer side | S2 from the other side
-    S1 = w_T * x1**2 / 2
-    S2 = w_T * x2**2 / 2
+    S1 = w_T * x1 ** 2 / 2
+    S2 = w_T * x2 ** 2 / 2
 
     # For parabolic parametrization
-    a = x2 **2 / (4 * S2)
-    vectorizeParabolic = np.vectorize(parabolicFunc)
+    a = x2 ** 2 / (4 * S2)
+    vectorizeParabolic = np.vectorize(parabolic_func)
     heights = vectorizeParabolic(np.linspace(-x1, x2, count), a, pFirst[2] - S1)
     smallpoints = np.stack([xInterpolated, yInterpolated, heights]).T
     pts.extend(smallpoints.tolist())
@@ -89,25 +98,26 @@ def addLinebetweenTowers(data, t1ID, t2ID, wireID1, wireID2):
     return pts
 
 
-def TowerIDSJson(data):
+def tower_ids_json(data):
     return [idx for idx, d in enumerate(data["features"]) if d["properties"]["type"] == "electric_pole"]
 
 
-def getrecursiveTowerSequence(coordinates, visited, remaining, distance):
+def get_recursive_tower_sequence(coordinates, visited, remaining, distance):
     if len(remaining) == 0:
         return visited, distance
     else:
-        distances = [np.linalg.norm(getDistanceBetweenTowerIDS(coordinates, visited[-1], tID)) for tID in remaining]
+        distances = [np.linalg.norm(get_distance_between_tower_IDS(coordinates, visited[-1], tID)) for tID in remaining]
         minIndex = np.argmin(distances)
         visited.append(remaining[minIndex])
         remaining.remove(remaining[minIndex])
-        return getrecursiveTowerSequence(coordinates, visited, remaining, distance + np.min(distances))
+        return get_recursive_tower_sequence(coordinates, visited, remaining, distance + np.min(distances))
 
 
-def getDistanceBetweenTowerIDS(coordinatesMap, tID1, tID2):
+def get_distance_between_tower_IDS(coordinatesMap, tID1, tID2):
     return GeoToCartesianMeters(coordinatesMap[tID1][::-1], coordinatesMap[tID2][::-1])
 
-def sortTowerIDsByDistance(data, tids):
+
+def sort_tower_ids_by_distance(data, tids):
     coordinates = {tid: data["features"][tid]["geometry"]["coordinates"] for tid in tids}
 
     # distanceMatrix = [[(getDistanceBetweenTowerIDS(coordinates, i, j)) for j in coordinates.keys()] for i in coordinates.keys()] 
@@ -117,56 +127,61 @@ def sortTowerIDsByDistance(data, tids):
         remaining = list(coordinates.keys())
         visited = [Id]
         remaining.remove(Id)
-        visited, distance = getrecursiveTowerSequence(coordinates, visited, remaining, 0)
-        sequenceWRTStart[Id] = {"sequence": visited, "distance" : distance}
-        
-    sequence = min(sequenceWRTStart.values(), key = lambda f: f["distance"])["sequence"]
+        visited, distance = get_recursive_tower_sequence(coordinates, visited, remaining, 0)
+        sequenceWRTStart[Id] = {"sequence": visited, "distance": distance}
+
+    sequence = min(sequenceWRTStart.values(), key=lambda f: f["distance"])["sequence"]
     return sequence
 
-def addLinefromRows(obj, r1, r2, ASL, azi):
+
+def add_linefrom_rows(obj, r1, r2, ASL, azi):
     if len(r1) == 0:
         r1, r2 = r2, r1
 
-    d1 = getxycoordinate(r1, azi)
+    d1 = get_xy_coordinate(r1, azi)
     if len(r2) == 0:
         d2 = [0, 0, d1[2]]
     else:
-        d2 = getxycoordinate(r2, azi)
+        d2 = get_xy_coordinate(r2, azi)
     d1[2] -= ASL
     d2[2] -= ASL
-    addLine(obj, d1, d2)
+    add_line(obj, d1, d2)
     return True
 
-def addLine(obj, d1, d2):
+
+def add_line(obj, d1, d2):
     obj["properties"]["structure"]["lines3d"].append([d1, d2])
     return True
 
-def getrowData(row, azi):
+
+def get_row_data(row, azi):
     name = row["Mastnummer"]
     height = row["T-Höhe"]
     distance = row["T-Breite"]
     pos = len(row["T-Winkel"]) == 3
     angle = azi if pos else (azi + 180) % 360
-    return name, height, distance, angle 
+    return name, height, distance, angle
 
-def getxycoordinate(row, azi):
-    name, height, distance, angle = getrowData(row.iloc[0], azi)
-    angle  = 90 - angle
+
+def get_xy_coordinate(row, azi):
+    name, height, distance, angle = get_row_data(row.iloc[0], azi)
+    angle = 90 - angle
     x = distance * np.cos(np.deg2rad(angle))
     y = distance * np.sin(np.deg2rad(angle))
     z = height
     return [x, y, z]
 
-def addAllLines(Pois, obj, ASL, azi, sequence):
+
+def add_all_lines(Pois, obj, ASL, azi, sequence):
     for i, j in zip(sequence[:-1], sequence[1:]):
         RowI = Pois[Pois["Seil"] == i]
         RowJ = Pois[Pois["Seil"] == j]
-        addLinefromRows(obj, RowI, RowJ, ASL, azi)
-    
+        add_linefrom_rows(obj, RowI, RowJ, ASL, azi)
+
     return True
 
 
-def build1Tower(name, long_lat, ASL, ASL_top, Pois, sequence, AZIMUTH):
+def build1_tower(name, long_lat, ASL, ASL_top, Pois, sequence, AZIMUTH):
     features = {"type": "Feature"}
     features["geometry"] = {
         "type": "Point",
@@ -179,21 +194,19 @@ def build1Tower(name, long_lat, ASL, ASL_top, Pois, sequence, AZIMUTH):
         "pois": [],
         "structure": {
             "lines3d": []}}
-    
-    name, topHeight, distance, angle = getrowData(Pois[Pois["Seil"] == "G"].iloc[0], AZIMUTH)
-    name, lineHeight, distance, angle = getrowData(Pois[Pois["Seil"] == "A"].iloc[0], AZIMUTH)
-    addPOI(features,  topHeight - ASL, 0, 0, True)
-    addLine(features, [0, 0, 0], [0, 0, topHeight - ASL])
 
+    name, topHeight, distance, angle = get_row_data(Pois[Pois["Seil"] == "G"].iloc[0], AZIMUTH)
+    name, lineHeight, distance, angle = get_row_data(Pois[Pois["Seil"] == "A"].iloc[0], AZIMUTH)
+    add_poi(features, topHeight - ASL, 0, 0, True)
+    add_line(features, [0, 0, 0], [0, 0, topHeight - ASL])
 
     for _, row in Pois.iterrows():
-        name, height, distance, angle = getrowData(row, AZIMUTH)
-        addPOI(features, height - ASL, distance, angle, False)
-    
-    addAllLines(Pois, features, ASL, (AZIMUTH), sequence)
+        name, height, distance, angle = get_row_data(row, AZIMUTH)
+        add_poi(features, height - ASL, distance, angle, False)
 
+    add_all_lines(Pois, features, ASL, (AZIMUTH), sequence)
 
     return features
 
-def toXY(distance, Azimuth, height):
-    return np.array([distance*np.cos(Azimuth), distance*np.sin(Azimuth), height])
+def to_xy(distance, Azimuth, height):
+    return np.array([distance * np.cos(Azimuth), distance * np.sin(Azimuth), height])
