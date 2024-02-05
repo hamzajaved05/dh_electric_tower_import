@@ -1,8 +1,9 @@
+ # This code snippet defines a class called TowerGeoJSON that inherits from BaseTower. It initializes the TowerGeoJSON object with JSON data, extracts information from the JSON data, filters the data based on wire direction, calculates points of interest (POIs)
 import numpy as np
 import pandas as pd
 from tower.pointofinterest import POI
 from tower.basetower import BaseTower
-from nmk.GeoUtils import GeoToCartesianMeters 
+from nmk.GeoUtils import GeoToCartesianMeters
 
 
 class TowerGeoJSON(BaseTower):
@@ -13,7 +14,7 @@ class TowerGeoJSON(BaseTower):
         self.uniqueIdentifier = "0"
         self.longitude = None
         self.latitude = None
-        self.baseHeight = None
+        self.base_height = 9999
         self.towerType = None
         self.towerMaterial = None
         self.JSON = {}
@@ -26,12 +27,19 @@ class TowerGeoJSON(BaseTower):
         i = 0
         while i < len(self.data["features"]):
             if self.data["features"][i]['geometry']['type'] == 'LineString':
-                self.longitude = self.data["features"][i]['geometry']['coordinates'][0][0]
-                self.latitude = self.data["features"][i]['geometry']['coordinates'][0][1]
-                self.base_height = self.data["features"][i]['geometry']['coordinates'][1][2]
-                break
-            i +=1
-            
+                lowestheight = min(self.data["features"][i]['geometry']['coordinates'][1][2],
+                                   self.data["features"][i]['geometry']['coordinates'][0][2])
+                highest_height = max(self.data["features"][i]['geometry']['coordinates'][1][2],
+                                   self.data["features"][i]['geometry']['coordinates'][0][2])
+
+                if lowestheight < self.base_height:
+                    self.longitude = self.data["features"][i]['geometry']['coordinates'][0][0]
+                    self.latitude = self.data["features"][i]['geometry']['coordinates'][0][1]
+                    self.base_height = lowestheight
+                    self.highest_point = highest_height
+
+            i += 1
+
         return True
 
     def filterDataBasedonWireDirection(self, data):
@@ -42,16 +50,18 @@ class TowerGeoJSON(BaseTower):
         return data[data["seil_richtung"] == directions[0]]
 
     def calculate_pois(self):
-        self.highest_point = 0
+        # self.highest_point = 0
 
         for feature in self.data["features"]:
             if feature['geometry']['type'] == 'Point':
                 point = feature['geometry']['coordinates']
 
                 if self.highest_point < point[2]:
-                    self.highest_point = point[2]
+                    print(f"Potentially a point higher than the Calibration Point in {self.name} at location: {self.latitude}, {self.longitude} | Poi height {point[2]} vs Highest Point {self. highest_point}")
+                    # self.highest_point = point[2]
 
                 if point[2] - self.base_height < 2:
+                    print("skipping")
                     continue
                 self.get_poi_from_3d_point(point)
 
@@ -66,13 +76,11 @@ class TowerGeoJSON(BaseTower):
             if feature['geometry']['type'] == 'LineString':
                 points = feature['geometry']['coordinates']
                 self.add_line(self.getXYlocation(points[0]), self.getXYlocation(points[1]))
-
         return True
-
 
     def getHighestPoint(self, data):
         return np.max(data[["elevation_ausl_hoeheabboden", "seil_realposy"]])
-    
+
     def get_poi_from_3d_point(self, point):
         cartesian_point = GeoToCartesianMeters([self.latitude, self.longitude], point[:2][::-1])
         angle = 90 - np.arctan2(cartesian_point[1], cartesian_point[0]) * 180 / np.pi
@@ -81,7 +89,7 @@ class TowerGeoJSON(BaseTower):
         self.add_poi(height=height, distance=distance, angle=angle, calibration=False)
 
         return True
-    
+
     def getXYlocation(self, point):
         cartesian_point = GeoToCartesianMeters([self.latitude, self.longitude], point[:2][::-1])
         return [*cartesian_point, point[2] - self.base_height]

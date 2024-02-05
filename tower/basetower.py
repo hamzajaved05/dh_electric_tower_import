@@ -27,16 +27,15 @@ class BaseTower(object):
             self.calculate_pois()
         if len(self.lines) == 0:
             self.calculate_lines()
-        if (len(self.pois) > 1 and not self.highest_point is None):
+        if len(self.pois) > 1 and not self.highest_point is None:
             self.generate_json()
             return self.json_data
 
     def generate_json(self):
-        self.json_data = {"type": "Feature"}
-        self.json_data["geometry"] = {
+        self.json_data = {"type": "Feature", "geometry": {
             "type": "Point",
             "coordinates": [self.longitude, self.latitude]
-        }
+        }}
 
         pois = [
             poi.jsonify() for poi in self.pois.values()
@@ -65,9 +64,6 @@ class BaseTower(object):
         return f"Tower {self.name}  '{self.unique_identifier}' at {self.longitude}, {self.latitude} with POI count = {len(self.pois)}"
     
     def add_line(self, p1, p2):
-        
-
-
         line = Line(p1, p2)
         hash = line.get_hash()
         if not hash in self.lines.keys():
@@ -79,8 +75,7 @@ class BaseTower(object):
             return data.iloc[0]
         else:
             return data
-        
-    
+
     def calculate_pois(self,):
         raise NotImplementedError
     

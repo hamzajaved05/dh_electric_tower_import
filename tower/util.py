@@ -53,16 +53,16 @@ def getPOILatLongHeight(data, towerId, poiId):
     x = distance * np.cos(np.deg2rad(aziCCW))
     y = distance * np.sin(np.deg2rad(aziCCW))
     out = CartesianMetersToGeo(TowerBase[::-1], [x, y, height])
-    return [out[1], out[0], out[2]]
+    return [out[1], out[0], height]
 
 def parabolicFunc(x, a, verticalOffset):
     return x**2 / (4 * a) + verticalOffset
 
-def addLinebetweenTowers(data, t1ID, t2ID, wireID):
+def addLinebetweenTowers(data, t1ID, t2ID, wireID1, wireID2):
     pts = []
-    pFirst = getPOILatLongHeight(data, t1ID, wireID)
+    pFirst = getPOILatLongHeight(data, t1ID, wireID1)
     pts.append(pFirst)
-    pLast = getPOILatLongHeight(data, t2ID, wireID)
+    pLast = getPOILatLongHeight(data, t2ID, wireID2)
     count = 10
 
     xInterpolated, yInterpolated = np.linspace(pFirst[0], pLast[0], count), np.linspace(pFirst[1], pLast[1], count)
@@ -81,17 +81,11 @@ def addLinebetweenTowers(data, t1ID, t2ID, wireID):
 
     # For parabolic parametrization
     a = x2 **2 / (4 * S2)
-    
     vectorizeParabolic = np.vectorize(parabolicFunc)
-
     heights = vectorizeParabolic(np.linspace(-x1, x2, count), a, pFirst[2] - S1)
-
     smallpoints = np.stack([xInterpolated, yInterpolated, heights]).T
-
     pts.extend(smallpoints.tolist())
     pts.append(pLast)
-
-
     return pts
 
 
