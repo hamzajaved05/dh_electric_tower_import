@@ -6,7 +6,7 @@ import os
 from utils.addWires import addLines
 from typing import List
 import geojson
-from nmk.helper import checkmkdir
+from namak.helper import checkmkdir
 
 
 path = "/home/hamzawlptp/Downloads/siegen.json"

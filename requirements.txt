@@ -5,3 +5,6 @@ pyproj
 numpy
 Namak
 scipy
+matplotlib
+python-xmp-toolkit
+openpyxl

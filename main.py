@@ -19,7 +19,7 @@ def main():
      Convert tower data to json. This is a python script to convert towes and vectoried data to json
     """
     basename: str = "base"
-    dir: str = "/mnt/00A03D3C0BCCF8D8/Data/PowerLinesData/20231006AXPO"
+    dir: str = "/media/hamzawl/Flux/Data/PowerLinesData/20240205AXPO"
     outdir: str = os.path.join(dir, "output")
     checkmkdir(outdir)
     files: List[str]  = [file for file in os.listdir(dir)]
@@ -66,7 +66,7 @@ def main():
             continue
 
     outfile = os.path.join(outdir, basename + "_n.json")
-    json_object = addLines(json_object)
+    # json_object = addLines(json_object)
 
     with open(outfile, "w") as f:
         json.dump(json_object, f, indent=4)

@@ -3,12 +3,11 @@ import typing
 import warnings
 import xml.etree.ElementTree as ET
 from typing import Dict, Any
-
 import pandas as pd
 import numpy as np
 from pyproj import CRS, Transformer
-from nmk.GeoUtils import GeoToCartesianMeters, CylindricalCoordinatesToGeo
-from nmk.helper import checkmkdir
+from namak.GeoUtils import GeoToCartesianMeters, CylindricalCoordinatesToGeo
+from namak.helper import checkmkdir
 import json
 
 import simplifyTowerStructure
