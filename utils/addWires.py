@@ -27,14 +27,8 @@ def addLines(data, ignore_calib = False):
         wires = []
 
         # Linear sum assignment to match wires
-
-        cost_matrix = calculate_cost_matrix(data,tID1, tID2)
-
+        cost_matrix = calculate_cost_matrix(data, tID1, tID2)
         r_ind, c_ind = linear_sum_assignment(cost_matrix)
-
-        # for wireId in range(0, pois_count):
-        #     wire = addLinebetweenTowers(data, tID1, tID2, wireId, wireID)
-        #     wires.append(wire)
 
         for wireID1, wireID2 in zip(r_ind, c_ind):
             poi1 = tower.util.get_poi_from_ids(data, tID1, wireID1)

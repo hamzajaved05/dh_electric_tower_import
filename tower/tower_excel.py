@@ -10,7 +10,7 @@ class TowerExcel(BaseTower):
 
         self.axpo = axpo
         self.data = kwargs["data"]
-        self.name = str(self.data["mastoid"].iloc[0])
+        self.name = str(self.data["name"].iloc[0])
         self.uniqueIdentifier = self.data["technplatz"].iloc[0]
         self.longitude = self.data["longitudewgs84"].iloc[0]
         self.latitude = self.data["latitudewgs84"].iloc[0]
