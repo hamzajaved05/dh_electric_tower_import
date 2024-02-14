@@ -3,6 +3,7 @@ import pandas as pd
 from tower.pointofinterest import POI
 from tower.line import Line
 from typing import Mapping
+import uuid
 
 
 class BaseTower(object):
@@ -47,6 +48,7 @@ class BaseTower(object):
             "name": str(self.name),
             "poleBaseASLMeters": self.base_height,
             "pois": pois,
+            "guid": str(uuid.uuid4()),
             "structure": {
                 "lines3d": [line.jsonify() for line in self.lines.values()]
             }

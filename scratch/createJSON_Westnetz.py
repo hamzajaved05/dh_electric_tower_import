@@ -1,6 +1,6 @@
 import json
 import pandas as pd
-from tower.util import build1_tower
+from tower.util import build_single_tower
 
     
 N_towers = 4
@@ -28,7 +28,7 @@ Traversen = Traversen[filt]
 
 for name, long_lat, asl, topasl, azi in zip(TowerNames, long_lats, ASLs, TopASLs, Azimuths):
     TowerData = Traversen[Traversen["Mastnummer"] == name].iloc[:, 2:7][:7]
-    x = build1_tower(name, long_lat, asl, topasl, TowerData, sequence ="A_B_C_D_E_F_G_", AZIMUTH= azi)
+    x = build_single_tower(name, long_lat, asl, topasl, TowerData, sequence ="A_B_C_D_E_F_G_", AZIMUTH= azi)
     json_object["features"].append(x)
 
 

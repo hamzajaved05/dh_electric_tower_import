@@ -22,7 +22,8 @@ class POI(object):
                     "azimuth": float(self.azimuth)}
 
         else:
-            return {"height": float(self.height),
+            return {"type": "INTEREST",
+                    "height": float(self.height),
                     "distance": float(self.distance),
                     "azimuth": float(self.azimuth),
                     "wireAzimuth1": float(-self.azimuth),

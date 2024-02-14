@@ -116,11 +116,23 @@ def get_recursive_tower_sequence(coordinates, visited, remaining, distance):
 def get_distance_between_tower_IDS(coordinatesMap, tID1, tID2):
     return GeoToCartesianMeters(coordinatesMap[tID1][::-1], coordinatesMap[tID2][::-1])
 
+def get_sequence_pairing_forced_connections(data, force_connectivity):
+    sequence_pairs_forced = set()
+    if force_connectivity is not None:
+        try:
+            name_to_id = {
+                d["properties"]["name"]:idx
+                for idx, d in enumerate(data["features"])
+                if d["properties"]["type"] == "electric_pole"
+            }
+            for k1, k2 in force_connectivity.items():
+                pairing = tuple(sorted([name_to_id[k1], name_to_id[k2]]))
+                sequence_pairs_forced.add(pairing)
+        except:
+            raise Exception("Problem with connectivity - Invalid connectivity specified")
+    return force_connectivity is not None, sequence_pairs_forced, tuple([name_to_id[k] for k in force_connectivity.keys()])
 
-def sort_tower_ids_by_distance(data, tids):
-    coordinates = {tid: data["features"][tid]["geometry"]["coordinates"] for tid in tids}
-
-    # distanceMatrix = [[(getDistanceBetweenTowerIDS(coordinates, i, j)) for j in coordinates.keys()] for i in coordinates.keys()] 
+def sort_tower_ids_by_distance(data, tids, force_connectivity=None):
 
     sequenceWRTStart = {}
     for Id in coordinates.keys():
@@ -131,7 +143,27 @@ def sort_tower_ids_by_distance(data, tids):
         sequenceWRTStart[Id] = {"sequence": visited, "distance": distance}
 
     sequence = min(sequenceWRTStart.values(), key=lambda f: f["distance"])["sequence"]
-    return sequence
+
+    sequence_pairs = set(tuple(sorted([sequence[i], sequence[i+1]])) for i in range(len(sequence) - 1))
+
+    if force_connect_ret:
+        # get pairs from force connectivity dict as tuples of tower ids
+        force_connect_ret, forced_sequence_pairs, ignore_towers = (
+            get_sequence_pairing_forced_connections(
+                data,
+                force_connectivity
+            )
+        )
+        coordinates = {
+            tid: data["features"][tid]["geometry"]["coordinates"]
+            for tid in tids
+        }
+
+        sequence_pairs = set(filter(lambda x: not (x[0] in ignore_towers or x[1] in ignore_towers),
+                                    sequence_pairs))
+        return sequence_pairs.union(forced_sequence_pairs)
+    else:
+        return sequence_pairs
 
 
 def add_linefrom_rows(obj, r1, r2, ASL, azi):
@@ -181,7 +213,7 @@ def add_all_lines(Pois, obj, ASL, azi, sequence):
     return True
 
 
-def build1_tower(name, long_lat, ASL, ASL_top, Pois, sequence, AZIMUTH):
+def build_single_tower(name, long_lat, ASL, ASL_top, Pois, sequence, AZIMUTH):
     features = {"type": "Feature"}
     features["geometry"] = {
         "type": "Point",
