@@ -8,3 +8,4 @@ scipy
 matplotlib
 python-xmp-toolkit
 openpyxl
+ezdxf
